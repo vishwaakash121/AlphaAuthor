@@ -10,9 +10,27 @@
           </div>
         </div>
         <div class="form-group row mt-2">
+          <%= f.label :publish_date, class: "col-2 col-form-label" %>
+          <div class="col-10">
+            <%= f.date_field :publish_date, class: "form-control shadow rounded", placeholder: "Date of post" %>
+          </div>
+        </div>
+        <div class="form-group row mt-2">
+          <%= f.label :author, class: "col-2 col-form-label" %>
+          <div class="col-10">
+            <%= f.text_field :author, class: "form-control shadow rounded", placeholder: "Author of post" %>
+          </div>
+        </div>
+        <div class="form-group row mt-2">
           <%= f.label :description, class: "col-2 col-form-label" %>
           <div class="col-10">
             <%= f.text_area :description, rows: 10, class: "form-control shadow rounded", placeholder: "Description of post" %>
+          </div>
+        </div>
+        <div class="form-group row mt-2">
+          <%= f.label :tags, class: "col-2 col-form-label" %>
+          <div class="col-10">
+            <%= f.text_field :tags, rows: 10, class: "form-control shadow rounded", placeholder: "Tags for post" %>
           </div>
         </div>
         <div class="text-center mt-3">

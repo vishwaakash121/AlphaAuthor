@@ -10,10 +10,13 @@
           </div>
           <div class="card-body">
             <h5 class="card-title">
-              <%= link_to post.title, post_path(post), class: "text-success" %>
+              <%= post.title %>
             </h5>
             <p class="card-text">
-              <%= truncate(post.description, length: 100) %>
+              <%= link_to post.description, post_path(post), class: "text-success", target: '_blank' %>
+            </p>
+            <p class="card-text">
+              <%= post&.publish_date&.strftime('%d/%m/%Y %I:%M %p') %>
             </p>
             <%= link_to "View" , post_path(post), class: "btn btn-outline-success" %>
             <% if logged_in? && post.user == current_user %>
