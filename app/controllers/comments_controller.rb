@@ -3,8 +3,13 @@ class CommentsController < ApplicationController
   before_action :require_user, only: %i[edit update destroy]
 
   def new
-    @post_id = params[:post_id]
-    @comment = Comment.new
+    if current_user.present?
+      @post_id = params[:post_id]
+      @comment = Comment.new
+    else
+      redirect_to login_path
+      flash[:notice] = 'Please login to comment'
+    end
   end
 
   def show; end
