@@ -1,0 +1,37 @@
+<h2 class="text-center mt-4">
+  <%= @post.title %>
+</h1>
+<div class="row justify-content-center">
+  <div class="col-8 mt-4">
+    <div class="card text-center shadow mb-5 bg-white rounded">
+      <div class="card-header fst-italic">
+        by <%= @post.user.username if @post.user %>
+        <%= link_to gravatar_for(@post.user), user_path(@post.user) %>
+      </div>
+      <div class="card-body">
+        <div class="card-text text-start">
+          <%= simple_format(@post.description) %>
+        </div>
+        <% if logged_in? && @post.user==current_user %>
+          <%= link_to "Edit" , edit_post_path(@post), class: "btn btn-outline-info" %>
+          <%= link_to "Delete" , post_path(@post), method: :delete, class: "btn btn-outline-danger" , data:
+                  {confirm: "Are you sure ?" }%>
+        <% end %>
+        <% if logged_in? %>
+          <%= link_to "Add Comment" , new_comment_path(post_id: @post.id),
+                        class: "btn btn-outline-secondary" %>
+        <% end %>
+      </div>
+      <div class="card-footer text-muted">
+        Created <%= time_ago_in_words(@post.created_at) %> ago,
+        Edited <%= time_ago_in_words(@post.updated_at) %> ago
+      </div>
+    </div>
+  </div>
+  <h3 class="text-center mt-2 mb-4">Comments</h3>
+  <div class="container">
+    <div class="row justify-content-center">
+      <%= render @post.comments %>
+    </div>
+  </div>
+</div>
