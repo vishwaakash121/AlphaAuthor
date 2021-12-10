@@ -1,0 +1,30 @@
+<div class="col-8 mb-4">
+  <div class="card card-white post">
+    <div class="post-heading">
+      <div class="float-start image">
+        <img src="http://bootdey.com/img/Content/user_1.jpg" class="img-circle avatar"
+                    alt="user profile image">
+      </div>
+      <div class="float-left meta">
+        <div class="title h5">
+          <%= link_to comment.user.username, user_path(comment.user) %>
+          <span  class="text-muted">commented</span>
+          <% if logged_in? && current_user == comment.user %>
+            <div class="float-end">
+              <%= link_to comment_path(comment), method: :delete, data: { confirm: 'Are you sure?' }, class: "m-2" do %>
+                <i class="fas fa-trash-alt fa-lg"></i>
+              <% end %>
+              <%= link_to edit_comment_path(comment), class: "m-2" do %>
+                <i class="far fa-edit fa-lg"></i>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+        <h6 class="text-muted time"><%= time_ago_in_words(comment.created_at) %> ago</h6>
+      </div>
+    </div>
+    <div class="post-description">
+      <p><%= comment.comment %></p>
+    </div>
+  </div>
+</div>
