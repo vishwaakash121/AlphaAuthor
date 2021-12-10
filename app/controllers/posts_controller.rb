@@ -1,16 +1,21 @@
 class PostsController < ApplicationController
-  # after_action, around_action : HW
+  
   before_action :set_post, only: %i[show edit update destroy]
   before_action :require_user, except: %i[show index]
-  before_action :require_same_user, only: %i[edit update destroy]
 
-  def show; end
-
-  def index
-    @posts = Post.paginate(page: params[:page], per_page: 5)
+  def show
   end
 
-  def edit; end
+  def index
+    @posts = Post.paginate(page: params[:page], per_page: 2)
+  end
+
+  def edit 
+    if !(can? :edit, @post)
+      flash[:error] = 'You are not allowed to edit others post'
+      redirect_back(fallback_location: root_path)
+    end
+  end
 
   def new
     @post = Post.new
@@ -20,7 +25,7 @@ class PostsController < ApplicationController
     @post = Post.new(post_params)
     @post.user = current_user
     if @post.save
-      flash[:notice] = 'post was created successfully.'
+      flash[:notice] = 'Post was created successfully.'
       redirect_to post_path(@post)
     else
       render 'new'
@@ -28,17 +33,27 @@ class PostsController < ApplicationController
   end
 
   def update
-    if @post.update(post_params)
-      flash[:notice] = 'post was updated successfully.'
-      redirect_to @post
+    if (can? :update, @post)
+      if @post.update(post_params)
+        flash[:notice] = 'Post was updated successfully.'
+        redirect_to @post
+      else
+        render 'edit'
+      end
     else
-      render 'edit'
+      flash[:error] = 'You are not allowed to update others post'
+      redirect_back(fallback_location: root_path)
     end
   end
 
   def destroy
-    @post.destroy
-    redirect_to posts_path
+    if (can? :delete, @post)
+      @post.destroy
+      redirect_to posts_path
+    else
+      flash[:error] = 'You are not allowed to delete others post'
+      redirect_back(fallback_location: root_path)
+    end
   end
 
   private
@@ -49,12 +64,5 @@ class PostsController < ApplicationController
 
   def post_params
     params.require(:post).permit(:title, :description, category_ids: [])
-  end
-
-  def require_same_user
-    if current_user != @post.user
-      flash[:alert] = 'You can only edit or delete your own post.'
-      redirect_to @post
-    end
   end
 end

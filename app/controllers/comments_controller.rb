@@ -1,7 +1,6 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[edit update destroy]
   before_action :require_user, only: %i[edit update destroy]
-  before_action :require_same_user, only: %i[edit update destroy]
 
   def new
     @post_id = params[:post_id]
@@ -23,20 +22,34 @@ class CommentsController < ApplicationController
     end
   end
 
-  def edit; end
+  def edit
+    if (can? :edit, @comment)
+      flash[:error] = 'You are not allowed to edit others comment'
+    end
+  end
 
   def update
-    if @comment.update(comment_params)
-      flash[:notice] = 'Comment was updated successfully.'
-      redirect_to @post
+    if (can? :update, @comment)
+      if @comment.update(comment_params)
+        flash[:notice] = 'Comment was updated successfully.'
+        redirect_to @post
+      else
+        render 'edit'
+      end
     else
-      render 'edit'
+      flash[:error] = 'You are not allowed to update others post'
+      redirect_back(fallback_location: root_path)
     end
   end
 
   def destroy
-    @comment.destroy
-    redirect_to post_path(@post)
+    if (can? :delete, @comment)
+      @comment.destroy
+      redirect_to post_path(@post)
+    else
+      flash[:error] = 'You are not allowed to delete others post'
+      redirect_back(fallback_location: root_path)
+    end
   end
 
   private
@@ -48,12 +61,5 @@ class CommentsController < ApplicationController
   def set_comment
     @comment = Comment.find(params[:id])
     @post = Post.find(@comment.post_id)
-  end
-
-  def require_same_user
-    if current_user != @comment.user
-      flash[:alert] = 'You can only edit or delete your own comment.'
-      redirect_to @post
-    end
   end
 end

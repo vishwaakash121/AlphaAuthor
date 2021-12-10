@@ -9,7 +9,7 @@
         <div class="title h5">
           <%= link_to comment.user.username, user_path(comment.user) %>
           <span  class="text-muted">commented</span>
-          <% if logged_in? && current_user == comment.user %>
+          <% if logged_in? && current_user == comment.user && @post.comments.last == comment %>
             <div class="float-end">
               <%= link_to comment_path(comment), method: :delete, data: { confirm: 'Are you sure?' }, class: "m-2" do %>
                 <i class="fas fa-trash-alt fa-lg"></i>

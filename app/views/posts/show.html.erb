@@ -17,10 +17,8 @@
           <%= link_to "Delete" , post_path(@post), method: :delete, class: "btn btn-outline-danger" , data:
                   {confirm: "Are you sure ?" }%>
         <% end %>
-        <% if logged_in? %>
-          <%= link_to "Add Comment" , new_comment_path(post_id: @post.id),
-                        class: "btn btn-outline-secondary" %>
-        <% end %>
+        <%= link_to "Add Comment" , new_comment_path(post_id: @post.id),
+                      class: "btn btn-outline-secondary" %>
       </div>
       <div class="card-footer text-muted">
         Created <%= time_ago_in_words(@post.created_at) %> ago,
